@@ -36,9 +36,8 @@ def mtrng_loss(model, x, y, l1_coef=0, predict_list=None):
     batch_size = y.shape[0]
     x, y = x.squeeze(), y.float().squeeze()
     x, y = x[:, predict_list], y[:, predict_list]
-    x, y = x.reshape(-1), y.reshape(-1)
-    prob = torch.sigmoid(x).reshape(-1)
-    loss = nn.BCEWithLogitsLoss()(x, y)
+    prob = torch.sigmoid(x)
+    loss = nn.BCEWithLogitsLoss()(x.reshape(-1), y.reshape(-1))
     # loss = slope_loss(x, y)
 
     l1_loss = 0.
@@ -48,6 +47,8 @@ def mtrng_loss(model, x, y, l1_coef=0, predict_list=None):
     loss = loss + l1_coef * l1_loss
     predict = prob > 0.5
     correct = (predict == y).sum() / len(predict_list) / batch_size
+    # correct_per_cat = (predict == y).sum(dim=0) / batch_size
+    # info = {"l1_loss": l1_loss, "batch_size": batch_size, "correct_per_cat": correct_per_cat}
     info = {"l1_loss": l1_loss, "batch_size": batch_size}
 
     return loss, correct, info

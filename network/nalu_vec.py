@@ -20,13 +20,14 @@ class NeuralVecMultiplier(nn.Module):
             self.input_dim = oracle.shape[2]
         else:
             self.no_oracle = True
-            self.operand = Parameter(torch.zeros(operand_num, input_dim, operand_dim))
+            self.operand = Parameter(torch.rand(operand_num, input_dim, operand_dim))
             self.adder = NeuralAdder(final_result)
 
     def forward(self, x):
         # if self.no_oracle:
         #     operand = torch.sigmoid(self.operand)
         # else:
+        # print(x.shape)
         operand = self.operand
         operand = operand.reshape(self.operand_num, self.input_dim, self.operand_dim)
         # batch_size, input_dim, length = x.shape
@@ -39,6 +40,25 @@ class NeuralVecMultiplier(nn.Module):
         # out = out.reshape(batch_size, self.operand_num, -1)
         out = out.squeeze()  # batch_size * num_operand*x_dim
         return out
+
+
+class MultiplierCracker(nn.Module):
+    def __init__(self, operand_num=64, operand_dim=64):
+        super(MultiplierCracker, self).__init__()
+        self.multiplier = NeuralVecMultiplier(input_dim=1, operand_num=operand_num, operand_dim=operand_dim,
+                                              final_result=True)
+
+        self.fc = nn.Linear(operand_num, 1)
+
+    def forward(self, x):
+        # x = x.transpose(0, 1)
+        batch_size, length = x.shape
+        x = x.reshape(batch_size, 1, length)
+        x = self.multiplier(x)
+        # x = F.relu(x)
+        x = x.transpose(1, 2)
+        x = self.fc(x)
+        return x.squeeze()
 
 
 class LehmerLearnedCracker(nn.Module):

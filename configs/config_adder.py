@@ -1,10 +1,10 @@
 import multiprocessing as mp
 import time
 
-input_bits, output_bits = 64, 64
+input_bits, output_bits = 128, 128
 lr = 1e-3
 weight_decay = 0
-batch_size = 4096
+batch_size = 1024
 num_epochs = 20000
 test_epoch = 5
 data_size = 20

@@ -34,6 +34,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer('pe', pe, persistent=False)
 
     def forward(self, x):
+        # print(x.shape,self.pe.shape)
         x = x + self.pe[:, :x.size(1)]
         return x
 

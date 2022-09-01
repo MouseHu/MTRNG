@@ -7,7 +7,7 @@ import numpy as np
 
 
 class AdderCell(nn.Module):
-    def __init__(self, final_result=True, require_grad=False):
+    def __init__(self, final_result=True, require_grad=True):
         super(AdderCell, self).__init__()
         self.w1 = Parameter(-1 * torch.ones(1) / 2, requires_grad=require_grad)
         self.b1 = Parameter(torch.ones(1) / 2, requires_grad=require_grad)
@@ -133,7 +133,8 @@ class NeuralMultiplier(nn.Module):
 
     def forward(self, x):
         if self.no_oracle:
-            operand = torch.sigmoid(self.operand)
+            # operand = torch.sigmoid(self.operand)
+            operand = self.operand
         else:
             operand = self.operand
         operand = operand.reshape(1, 1, self.operand_dim)

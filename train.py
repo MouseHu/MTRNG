@@ -10,7 +10,7 @@ from dataset.dataset import MTDataset, TemperDataset, HalfCrackerDataset, Lehmer
 from dataset.tmp_dataset import AdderDataset
 from network.fc import Temper, Cracker, CNNTwister, ResCNNTemper, LehmerForward, Adder, ResFC
 from network.nalu import NeuralAdder, NeuralMultiplier, LehmerCracker
-from network.nalu_vec import LehmerLearnedCracker
+from network.nalu_vec import LehmerLearnedCracker,MultiplierCracker
 from network.rnn import Multiplier
 from network.attention import AttentionTwister
 from torch_util import *
@@ -51,8 +51,10 @@ elif train_type == 4:
     # model = Adder(seqlen=1).double().cuda()
     # model = ResFC(input_bits=input_bits, output_bits=output_bits,seqlen=1).cuda()
     # model = Multiplier(input_bits=input_bits, output_bits=output_bits).cuda()
+    # model = MultiplierCracker(operand_num=64).cuda()
     # model = LehmerLearnedCracker().cuda()
-    model = NeuralMultiplier(final_result=True).cuda()
+    # model = NeuralMultiplier(operand_dim=64, final_result=True).cuda()
+    model = NeuralMultiplier(operand_dim=128, final_result=True).cuda()
     # model = AttentionTwister(seqlen=input_bits, input_bits=1, output_bits=output_bits).cuda()
 
 elif train_type == 5:
